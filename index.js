@@ -79,14 +79,32 @@ function makeSound(char) {
   }
 }
 
+function buttonAnimation(currentKey, eventListener) {
+  var activeButton = document.querySelector(`.${currentKey}`);
+
+  if ( eventListener.type === "keydown" ) {
+    activeButton.classList.add("pressed");
+  } else if ( eventListener.type === "keyup" ) {
+    activeButton.classList.remove("pressed");
+  } else if ( eventListener.type === "click" ) {
+    activeButton.classList.add("pressed");
+    // release button after 100ms
+    setTimeout( () => {
+      activeButton.classList.remove("pressed");
+    }, 100);
+  }
+}
+
+
 // Detecting button press
 
 var numberOfDrumButtons = document.querySelectorAll(".drum").length;
 
 for (var i = 0; i < numberOfDrumButtons; i++) {
-  document.querySelectorAll(".drum")[i].addEventListener("click", function () {
+  document.querySelectorAll(".drum")[i].addEventListener("click", function (eventListener) {
     var buttonLetter = this.innerHTML;
     makeSound(buttonLetter);
+    buttonAnimation(buttonLetter, eventListener);
   });
 }
 
@@ -95,4 +113,12 @@ for (var i = 0; i < numberOfDrumButtons; i++) {
 document.addEventListener("keydown", eventlistener => {
   var pressedKey = eventlistener.key;
   makeSound(pressedKey);
+  buttonAnimation(pressedKey, eventlistener);
+});
+
+// Detecting keyboard release
+
+document.addEventListener("keyup", eventlistener => {
+  var pressedKey = eventlistener.key;
+  buttonAnimation(pressedKey, eventlistener);
 });
